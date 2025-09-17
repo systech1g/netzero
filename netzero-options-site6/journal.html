@@ -1,0 +1,11 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>NetZero Options — Journal</title><link rel="stylesheet" href="./styles.css"/><link rel="icon" href="data:,"/></head><body>
+<header class="topbar"><div class="brand">NetZero Options</div><nav class="nav">
+<a class="navlink" href="./index.html">Dashboard</a><a class="navlink" href="./insights.html">Insights</a><a class="navlink active" href="./journal.html">Journal</a>
+</nav></header><main class="container"><section class="panel"><div class="panel-title">Closed / Rolled Journal</div>
+<div class="panel-body"><div class="controls"><div class="group"><label>Search</label><input id="search" placeholder="Find symbol/note"/></div>
+<div class="group"><label>Export</label><button id="btn-export" class="btn">Export Journal CSV</button></div></div>
+<div class="table-wrap"><table class="table" id="journal"><thead></thead><tbody></tbody></table></div></div></section></main>
+<footer class="foot"><small>Journal entries are saved locally.</small></footer>
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<script type="module" src="./shared.js"></script><script type="module" src="./journal.js"></script></body></html>

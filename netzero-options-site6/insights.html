@@ -1,0 +1,20 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>NetZero Options — Insights</title><link rel="stylesheet" href="./styles.css"/><link rel="icon" href="data:,"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script></head><body>
+<header class="topbar"><div class="brand">NetZero Options</div><nav class="nav">
+<a class="navlink" href="./index.html">Dashboard</a><a class="navlink active" href="./insights.html">Insights</a><a class="navlink" href="./journal.html">Journal</a>
+</nav></header>
+<main class="container">
+<section class="panel"><div class="panel-title">KPIs</div><div class="panel-body kpis">
+<div class="kpi"><div class="label">Total Credit</div><div class="val" id="k-credit">$0</div></div>
+<div class="kpi"><div class="label">Unrealized</div><div class="val" id="k-unrealized">$0</div></div>
+<div class="kpi"><div class="label">Realized (Journal)</div><div class="val" id="k-realized">$0</div></div>
+<div class="kpi"><div class="label">Positions</div><div class="val" id="k-counts">0 open</div></div>
+</div></div></section>
+<section class="panel"><div class="panel-title">Charts</div><div class="panel-body"><canvas id="pieITM" height="140"></canvas></div></section>
+<section class="panel"><div class="panel-title">Upcoming Expirations</div><div class="panel-body table-wrap">
+<table class="table" id="upcoming"><thead><tr><th>Symbol</th><th>Expiration</th><th>DTE</th><th>Strategy</th><th>Δ$ to Strike</th><th>Δ% to Strike</th></tr></thead><tbody></tbody></table>
+</div></section></main>
+<footer class="foot"><small>ITM (red) / OTM (blue).</small></footer>
+<script type="module" src="./shared.js"></script><script type="module" src="./insights.js"></script>
+</body></html>

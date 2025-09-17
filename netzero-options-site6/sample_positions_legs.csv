@@ -1,0 +1,9 @@
+PositionId,Symbol,Status,Strategy,Quantity,Expiration,Side,LegType,Strike,Premium,OpenDate,CloseDate,Notes
+1,TSLA,Open,Put Credit Spread,1,2025-11-21,Put,Short,280,10.0,2025-09-10,,PCS short
+1,TSLA,Open,Put Credit Spread,1,2025-11-21,Put,Long,180,0.0,2025-09-10,,PCS long
+2,NVDA,Open,Cash-Secured Put,1,2025-11-21,Put,Short,150,8.5,2025-09-10,,CSP short
+3,MSTR,Open,Covered Call,1,2025-10-17,Call,Short,290,5.2,2025-09-10,,CC short
+4,AXON,Open,Iron Condor,1,2025-12-19,Put,Short,640,6.0,2025-09-10,,IC put short
+4,AXON,Open,Iron Condor,1,2025-12-19,Put,Long,540,0.0,2025-09-10,,IC put long
+4,AXON,Open,Iron Condor,1,2025-12-19,Call,Short,760,6.0,2025-09-10,,IC call short
+4,AXON,Open,Iron Condor,1,2025-12-19,Call,Long,860,0.0,2025-09-10,,IC call long

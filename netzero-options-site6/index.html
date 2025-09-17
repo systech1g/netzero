@@ -1,0 +1,96 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>NetZero Options — Dashboard</title>
+<link rel="stylesheet" href="./styles.css"/><link rel="icon" href="data:,"/>
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+</head><body>
+<header class="topbar"><div class="brand">NetZero Options</div><nav class="nav">
+<a class="navlink active" href="./index.html">Dashboard</a>
+<a class="navlink" href="./insights.html">Insights</a>
+<a class="navlink" href="./journal.html">Journal</a>
+<span class="font-control">Font <input id="font-range" type="range" min="10" max="16" step="1" value="14"/></span>
+<button id="btn-settings" class="btn">Settings</button>
+<button id="btn-export" class="btn">Export CSV</button>
+</nav></header>
+<main class="container">
+<section class="panel"><div class="panel-title">Portfolio</div><div class="panel-body">
+<div class="kpis">
+<div class="kpi"><div class="label">Open / Closed / Rolled</div><div class="val" id="k-open-closed">0 / 0 / 0</div></div>
+<div class="kpi"><div class="label">Total Collateral Used</div><div class="val" id="k-collateral">$0</div></div>
+<div class="kpi"><div class="label">Total Premium Received</div><div class="val" id="k-premium">$0</div></div>
+<div class="kpi"><div class="label">Realized Premium (closed)</div><div class="val" id="k-realized">$0</div></div>
+</div></div></section>
+<section class="panel"><div class="panel-title">Controls</div><div class="panel-body controls">
+<div class="group"><label>Import CSV</label><input id="file-csv" type="file" accept=".csv"/></div>
+<div class="group"><label>Add / Edit</label><button id="btn-add" class="btn secondary">Add Position</button></div>
+<div class="group"><label>Search</label><input id="search" placeholder="Find symbol/strategy"/></div>
+<div class="group"><label>Status</label><select id="filter-status"><option value="">All</option><option>Open</option><option>Closed</option><option>Rolled</option></select></div>
+<div class="group"><label>Auto-refresh (sec)</label><input id="refresh-seconds" type="number" min="0" value="60"/></div>
+<div class="group"><label>&nbsp;</label><button id="btn-refresh" class="btn">Refresh Prices</button></div>
+<div class="group"><label>Alert Bands</label><button id="btn-edit-alerts" class="btn warn">Edit Alerts</button></div>
+<div class="group"><label>&nbsp;</label><a class="btn" href="./sample_positions_legs.csv" download>Template (multi-leg)</a></div>
+</div></section>
+<section class="panel"><div class="panel-title">Positions <span class="badge" id="badge-source">Source: Yahoo (delayed)</span></div>
+<div class="panel-body table-wrap"><table class="table" id="grid"><thead></thead><tbody></tbody></table></div>
+</section></main>
+
+<dialog id="editor"><form method="dialog" class="modal" id="editor-form"><h3 id="editor-title">Add Position</h3>
+<div class="grid-2">
+<label>Symbol<input name="Symbol" required/></label>
+<label>Strategy<select name="Strategy"><option>Put Credit Spread</option><option>Call Credit Spread</option><option>Cash-Secured Put</option><option>Covered Call</option><option>Iron Condor</option><option>Long Call</option><option>Long Put</option></select></label>
+<label>Side<select name="Side"><option>Put</option><option>Call</option><option>Both</option></select></label>
+<label>Status<select name="Status"><option>Open</option><option>Closed</option><option>Rolled</option></select></label>
+<label>Quantity<input name="Quantity" type="number" step="1" value="1"/></label>
+<label>Short Strike<input name="ShortStrike" type="number" step="0.01"/></label>
+<label>Long Strike<input name="LongStrike" type="number" step="0.01"/></label>
+<label>Premium Received (per spread)<input name="PremiumReceived" type="number" step="0.01"/></label>
+<label>Premium Unrealized<input name="PremiumUnrealized" type="number" step="0.01"/></label>
+<label>Expiration<input name="Expiration" type="date"/></label>
+<label>Open Date<input name="OpenDate" type="date"/></label>
+<label>Close Date<input name="CloseDate" type="date"/></label>
+<label>Collateral Override<input name="CollateralOverride" type="number" step="0.01" placeholder="Auto if blank"/></label>
+<label>Notes<input name="Notes"/></label>
+</div>
+<div class="panel"><div class="panel-title">Legs</div><div class="panel-body">
+<table class="table"><thead><tr><th>Type</th><th>Side</th><th>Strike</th><th>Premium</th><th>Qty</th><th></th></tr></thead><tbody id="legs-body"></tbody></table>
+<button id="btn-add-leg" class="btn secondary">Add Leg</button>
+</div></div>
+<menu class="actions"><button value="cancel" class="btn">Cancel</button><button id="btn-save" value="confirm" class="btn primary">Save</button></menu>
+</form></dialog>
+
+<dialog id="roll"><form method="dialog" class="modal" id="roll-form"><h3>Roll Calculator</h3>
+<div class="grid-2">
+<label>Symbol <input name="symbol" readonly/></label>
+<label>Current Expiration <input name="expiration" readonly/></label>
+<label>Current Short Strike <input name="short" type="number" step="0.01" readonly/></label>
+<label>Current Width <input name="width" type="number" step="0.01" readonly/></label>
+<label>Target Credit ($/spread) <input name="targetCredit" type="number" step="0.01" value="1.00"/></label>
+<label>Add Days to Expiration <input name="dteAdd" type="number" step="1" value="7"/></label>
+<label>Change Width (± points) <input name="widthChange" type="number" step="1" value="0"/></label>
+<label>Strategy<select name="rollType"><option value="RDC">RDC (Roll Down & Credit)</option><option value="RD">RD (Roll Down)</option><option value="RE">RE (Roll Expiration)</option><option value="DD">DD (Double Down)</option><option value="RU">RU (Roll Up)</option></select></label>
+</div>
+<div id="roll-output" class="details"></div>
+<menu class="actions"><button value="cancel" class="btn">Close</button><button id="btn-roll-apply" class="btn primary">Apply Suggestion</button></menu>
+</form></dialog>
+
+<dialog id="settings"><form method="dialog" class="modal" id="settings-form"><h3>Settings</h3>
+<div class="grid-2">
+<label>Data Source
+  <select name="source">
+    <option value="yahoo">Yahoo Finance (recommended)</option>
+    <option value="google">Google Finance (experimental)</option>
+    <option value="cboe">CBOE (experimental)</option>
+  </select>
+</label>
+<label>Test Symbol <input name="testSymbol" value="AAPL"/></label>
+</div>
+<div class="details" id="settings-status">Status: not tested</div>
+<h4>Alert Bands</h4>
+<p>Set alert thresholds for % distance to sold strike. Example: 0.2 = 20%.</p>
+<div id="alerts-list" class="flex-col"></div>
+<menu class="actions"><button id="btn-add-alert" class="btn secondary">Add Alert</button><button value="cancel" class="btn">Close</button><button id="btn-settings-save" value="confirm" class="btn primary">Save</button><button id="btn-test-conn" class="btn">Test Connection</button></menu>
+</form></dialog>
+
+<footer class="foot"><small>Quotes may be delayed. Data via client-only fetch.</small></footer>
+<script type="module" src="./shared.js"></script><script type="module" src="./main.js"></script>
+</body></html>
